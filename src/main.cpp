@@ -2,7 +2,9 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <format>
+#include "XWindow.h"
 
+//necessario per forzare l'uso della scheda video NVidia sul laptop invece della scheda video integrata Intel
 #ifdef _WIN32
 extern "C" {
 	   __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
@@ -11,62 +13,35 @@ extern "C" {
 
 int main() {
 	
+	XWindow Win = XWindow(640, 460, "OPENGL Window");
 	
-	/*Come prima cosa creiamo il contesto grafico
-	Iniziamo verificando che GLFW funzioni*/
 
-	if(glfwInit() == GLFW_FALSE) {
-		std::cerr << "GLFW initialization failed!" << std::endl;
-		return -1;
-	}
-
-	//GLFW è il nostro wrapper per il contesto grafico. Quindi indirizziamolo per il contesto OpenGL, che è alla versione 4.6
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT,GL_TRUE); //Eseguirlo in modalità compatibilità per le versioni precedenti
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  //è un profilo core "stretto" che non include le funzioni obsolete
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE); //Abilitiamo il contesto di debug per vedere gli errori 
-
-	//Ora andiamo a creare la finestra dove girerà il programma, creando tutte le variabili
-	GLFWmonitor* monitor = NULL; 		//Iniziamo settando il monitor. Mettendo NULL verrà preso il monitor principale
-	int width = 640;
-	int height = 480;
-	const char* title = "OPENGL Window";
-	GLFWwindow* window = glfwCreateWindow(width,height,title,monitor, NULL);	//creiamo la finestra
-	if(window == NULL)
-	{
-		std::cerr << "[ERR]: Window not created" << std::endl;
-		throw std::runtime_error("[ERR]: Window not created");
-	}
-	glfwMakeContextCurrent(window);	
-	if (gladLoadGL() == 0)		//Carichiamo le funzioni di OpenGL, controllando che si siano caricate
-	{
-		std::cerr << "[ERR]: Error loading GL Functions" << std::endl;
-		throw std::runtime_error("[ERR]: Error loading GL Functions");
-	}
-
-
-
+	//Queste due variabili servono per stabilizzare il titolo della finestra, se no si aggiorna ogni frame.
+	float TitleUpdateMaxTime = 1.f;			//aggiorniamo il titolo una volta al secondo
+	float TitleUpdateElapsed = 0.f;			//Contatore
+	
+	
 	//A questo punto, abbiamo la finestra, ma partirà e si chiuderà all'istante. Creiamo il while per evitare che si chiuda
-	float DeltaTime = 0.f;
-	while(!glfwWindowShouldClose(window))
+	while(Win.IsOpened())
 	{
-		static float LastTime = glfwGetTime();
 		
-		float CurrTime = glfwGetTime();
-		DeltaTime = CurrTime - LastTime;
-		LastTime = CurrTime;
+		float DeltaTime = Win.GetDeltaTime();		
 
-		int Fps = 1.f / DeltaTime;
-		std::string formattedTitle =  std::format("OpenGL App | DeltaTime =  {}    FPS = {}", DeltaTime, Fps);
+		//Mostriamo il titolo una volta al secondo, usando un contatore che si incrementa del delta time e quando arriva a 1 mostra il titolo
+		TitleUpdateElapsed+= DeltaTime;
+		if(TitleUpdateElapsed >= TitleUpdateMaxTime)
+		{
+			int Fps = 1.f / DeltaTime;
+			std::string formattedTitle =  std::format("OpenGL App | DeltaTime =  {}    FPS = {}", DeltaTime, Fps);
+			Win.SetTitle(formattedTitle);
+			TitleUpdateElapsed -= TitleUpdateElapsed; //Invece che mettere "= 0", sottraiamo il contatore a 1 così da avere anche il residuo possibile
+		}
 
-		glfwSetWindowTitle(window, formattedTitle.c_str());
 
-		//Ok la finestra è aperta, ma in questo modo avremo solo un patacco unicolore FREEZATO. Dobbiamo "consumare" gli eventi della finestra per aggiornalaù
-		glfwSwapBuffers(window);		//Swap del front buffer con il back buffer
-		glfwPollEvents();				//consumo degli eventi
+		//Aggiorniamo la finestra 
+		Win.Update();
 	}
-
+	
 
 
 	return 0;	
