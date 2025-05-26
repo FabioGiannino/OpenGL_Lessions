@@ -3,6 +3,7 @@
 #include <iostream>
 #include <format>
 #include "XWindow.h"
+#include "TriangleDraw.h"
 
 //necessario per forzare l'uso della scheda video NVidia sul laptop invece della scheda video integrata Intel
 #ifdef _WIN32
@@ -19,6 +20,8 @@ int main() {
 	//Queste due variabili servono per stabilizzare il titolo della finestra, se no si aggiorna ogni frame.
 	float TitleUpdateMaxTime = 1.f;			//aggiorniamo il titolo una volta al secondo
 	float TitleUpdateElapsed = 0.f;			//Contatore
+	
+	TriangleDraw Scene;
 	
 	
 	//A questo punto, abbiamo la finestra, ma partirà e si chiuderà all'istante. Creiamo il while per evitare che si chiuda
@@ -37,6 +40,7 @@ int main() {
 			TitleUpdateElapsed -= TitleUpdateElapsed; //Invece che mettere "= 0", sottraiamo il contatore a 1 così da avere anche il residuo possibile
 		}
 
+		Scene.Update(DeltaTime);
 
 		//Aggiorniamo la finestra 
 		Win.Update();
