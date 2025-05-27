@@ -14,7 +14,7 @@ extern "C" {
 
 int main() {
 	
-	XWindow Win = XWindow(640, 460, "OPENGL Window");
+	XWindow Win = XWindow(800, 600, "OPENGL Window");
 	
 
 	//Queste due variabili servono per stabilizzare il titolo della finestra, se no si aggiorna ogni frame.
@@ -41,9 +41,10 @@ int main() {
 		}
 
 		Scene.Update(DeltaTime);
-
+		
 		//Aggiorniamo la finestra 
 		Win.Update();
+
 	}
 	
 

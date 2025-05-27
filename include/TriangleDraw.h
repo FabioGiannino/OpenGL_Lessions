@@ -8,5 +8,7 @@ public:
     void Update(float InDeltaTime);
 private:
     GLuint ProgramID;
+    GLuint VAO;
+    GLuint VBO;
     
 };
