@@ -5,6 +5,7 @@
 #include "XWindow.h"
 #include "TriangleDraw.h"
 #include "QuadDraw.h"
+#include "QuadIndexDraw.h"
 
 //necessario per forzare l'uso della scheda video NVidia sul laptop invece della scheda video integrata Intel
 #ifdef _WIN32
@@ -23,7 +24,8 @@ int main() {
 	float TitleUpdateElapsed = 0.f;			//Contatore
 	
 	//TriangleDraw Scene;
-	QuadDraw Scene;
+	//QuadDraw Scene;
+	QuadIndexDraw Scene;
 	
 	
 	//A questo punto, abbiamo la finestra, ma partirà e si chiuderà all'istante. Creiamo il while per evitare che si chiuda
