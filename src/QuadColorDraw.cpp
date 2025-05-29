@@ -90,5 +90,12 @@ void QuadColorDraw::Update(float InDeltaTime)
     GLint BaseColorLocation =  glGetUniformLocation(Program->ProgramID, "base_color");      
     glUniform4fv(BaseColorLocation, 1, reinterpret_cast<GLfloat*>(&TimedColor));       
 
+
+    GLfloat ScaleLocation =  glGetUniformLocation(Program->ProgramID, "scale"); 
+    float scaleSpeed = 10.f;
+    float scaleFactor = sinf(ElapsedTime*scaleSpeed) * 0.5 + 0.5f;
+    glUniform1f(ScaleLocation, scaleFactor);       
+
+
     glDrawArrays(GL_TRIANGLES, 0, 6);   //disegnamo i 6 vertici, in modalità "Triangolo"
 }
