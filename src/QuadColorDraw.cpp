@@ -5,6 +5,13 @@
 #include <vector>
 #include "OpenGL_Program.h"
 
+struct Color
+{
+    float R;
+    float G;
+    float B;
+    float A;
+};
 
 //Disegnare il quadrato implica disegnare due triangoli rettangoli isosceli congruenti, colorandolo
 QuadColorDraw::QuadColorDraw()
@@ -51,6 +58,12 @@ QuadColorDraw::QuadColorDraw()
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);  
     Program->Bind();                  
 
+    //Andiamo a settare il valore della variabile "base_color" definita nel file .frag
+    GLint BaseColorLocation =  glGetUniformLocation(Program->ProgramID, "base_color");      //Troviamo la variabile base_color dentro il programma
+    Color BaseColor(0.5f, 0.5f, 0.5f, 1.f);                                             //Creiamo una variabile color di una struttura custom   
+    const GLfloat* BaseColorPtr = reinterpret_cast<GLfloat*>(&BaseColor);               //CASTIAMO quella variabile a un puntatore di float
+    glUniform4fv(BaseColorLocation, 1, BaseColorPtr);                                   //SALVIAMO dentro "base_color" IL VALORE DELLA VARIABILE COLOR, sotto forma di puntatore di float (4fv sta per vector4 di float, cioè 4 float di dati)
+
 }
 
 QuadColorDraw::~QuadColorDraw()
@@ -63,5 +76,19 @@ QuadColorDraw::~QuadColorDraw()
 void QuadColorDraw::Update(float InDeltaTime)
 {
     glClear(GL_COLOR_BUFFER_BIT);   //Ad ogni update puliamo il buffer 
+
+    //Cambiamo il colore nel tempo
+    static float ElapsedTime = 0;
+    ElapsedTime += InDeltaTime;
+
+    Color TimedColor;
+    TimedColor.R = sinf(ElapsedTime) * 0.5 + 0.5f;  //funzione del seno trasformata, varia in un range tra 0.f e 1.f
+    TimedColor.G = cosf(ElapsedTime) * 0.5 + 0.5f;  //funzione del seno trasformata, varia in un range tra 0.f e 1.f
+    TimedColor.B = sinf(ElapsedTime + 1.1f) * 0.5 + 0.5f;  //funzione del seno trasformata, varia in un range tra 0.f e 1.f
+    TimedColor.A = 1;  //funzione del seno trasformata, varia in un range tra 0.f e 1.f
+    
+    GLint BaseColorLocation =  glGetUniformLocation(Program->ProgramID, "base_color");      
+    glUniform4fv(BaseColorLocation, 1, reinterpret_cast<GLfloat*>(&TimedColor));       
+
     glDrawArrays(GL_TRIANGLES, 0, 6);   //disegnamo i 6 vertici, in modalità "Triangolo"
 }

@@ -8,6 +8,7 @@ public:
     OpenGL_Program(const std::string& InVertexPath, const std::string& InFragmentPath);
     ~OpenGL_Program();
     void Bind();
-private:
     GLuint ProgramID;
+private:
+    
 };
