@@ -59,7 +59,7 @@ QuadColorDraw::QuadColorDraw()
     Program->Bind();                  
 
     //Andiamo a settare il valore della variabile "base_color" definita nel file .frag
-    GLint BaseColorLocation =  glGetUniformLocation(Program->ProgramID, "base_color");      //Troviamo la variabile base_color dentro il programma
+    GLint BaseColorLocation =  glGetUniformLocation(Program->GetProgramID(), "base_color");      //Troviamo la variabile base_color dentro il programma
     Color BaseColor(0.5f, 0.5f, 0.5f, 1.f);                                             //Creiamo una variabile color di una struttura custom   
     const GLfloat* BaseColorPtr = reinterpret_cast<GLfloat*>(&BaseColor);               //CASTIAMO quella variabile a un puntatore di float
     glUniform4fv(BaseColorLocation, 1, BaseColorPtr);                                   //SALVIAMO dentro "base_color" IL VALORE DELLA VARIABILE COLOR, sotto forma di puntatore di float (4fv sta per vector4 di float, cioè 4 float di dati)
@@ -87,11 +87,11 @@ void QuadColorDraw::Update(float InDeltaTime)
     TimedColor.B = sinf(ElapsedTime + 1.1f) * 0.5 + 0.5f;  //funzione del seno trasformata, varia in un range tra 0.f e 1.f
     TimedColor.A = 1;  //funzione del seno trasformata, varia in un range tra 0.f e 1.f
     
-    GLint BaseColorLocation =  glGetUniformLocation(Program->ProgramID, "base_color");      
+    GLint BaseColorLocation =  glGetUniformLocation(Program->GetProgramID(), "base_color");      
     glUniform4fv(BaseColorLocation, 1, reinterpret_cast<GLfloat*>(&TimedColor));       
 
 
-    GLfloat ScaleLocation =  glGetUniformLocation(Program->ProgramID, "scale"); 
+    GLfloat ScaleLocation =  glGetUniformLocation(Program->GetProgramID(), "scale"); 
     float scaleSpeed = 10.f;
     float scaleFactor = sinf(ElapsedTime*scaleSpeed) * 0.5 + 0.5f;
     glUniform1f(ScaleLocation, scaleFactor);       

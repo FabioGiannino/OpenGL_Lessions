@@ -89,11 +89,11 @@ GLuint CreateProgram(GLuint VertexShaderID, GLuint FragmentShaderID)
     glGetProgramiv(ProgramID ,GL_LINK_STATUS, &Success); 
     if(!Success)
     {        
-        GLint MaxLogLenght;
-        glGetShaderiv(ProgramID, GL_INFO_LOG_LENGTH, &MaxLogLenght); //Ottengo la lunghezza dell'InfoLog
+        GLint MaxLogLength;
+        glGetShaderiv(ProgramID, GL_INFO_LOG_LENGTH, &MaxLogLength); //Ottengo la lunghezza dell'InfoLog
         
-        std::vector<GLchar> InfoLog(MaxLogLenght);      
-        glGetShaderInfoLog(ProgramID, MaxLogLenght, NULL, InfoLog.data()); //Inserisco tutto il log dentro la memoria di un vettore
+        std::vector<GLchar> InfoLog(MaxLogLength);      
+        glGetProgramInfoLog(ProgramID, MaxLogLength, NULL, InfoLog.data()); //Inserisco tutto il log dentro la memoria di un vettore
         
         std::string LogString(InfoLog.begin(), InfoLog.end());  //Costruiamo la stringa da stampare a console
         std::cout << "[ERRO]: Program Compilation Failure: " << LogString <<std::endl;
@@ -104,5 +104,10 @@ GLuint CreateProgram(GLuint VertexShaderID, GLuint FragmentShaderID)
     glDeleteShader(FragmentShaderID);
     
 
+    return ProgramID;
+}
+
+GLuint OpenGL_Program::GetProgramID() const
+{
     return ProgramID;
 }

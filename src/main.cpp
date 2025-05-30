@@ -6,7 +6,8 @@
 #include "TriangleDraw.h"
 #include "QuadDraw.h"
 #include "QuadIndexDraw.h"
-#include "QuadColorDraw.h"
+#include "QuadColorDraw.h" 
+#include "TextureDraw.h"	
 
 //necessario per forzare l'uso della scheda video NVidia sul laptop invece della scheda video integrata Intel
 #ifdef _WIN32
@@ -27,8 +28,10 @@ int main() {
 	//TriangleDraw Scene;
 	//QuadDraw Scene;
 	//QuadIndexDraw Scene;
-	QuadColorDraw Scene;
+	//QuadColorDraw Scene;
+	TextureDraw Scene;
 	
+
 	//A questo punto, abbiamo la finestra, ma partirà e si chiuderà all'istante. Creiamo il while per evitare che si chiuda
 	while(Win.IsOpened())
 	{
