@@ -10,6 +10,7 @@
 #include "TextureDraw.h"	
 #include "TexurePerspective.h"
 #include "CubeDraw.h"
+#include "RandomTextureDraw.h"
 
 //necessario per forzare l'uso della scheda video NVidia sul laptop invece della scheda video integrata Intel
 #ifdef _WIN32
@@ -33,7 +34,8 @@ int main() {
 	//QuadColorDraw Scene;
 	//TextureDraw Scene;
 	//TexurePerspective Scene;
-	CubeDraw Scene;
+	//CubeDraw Scene;
+	RandomTextureDraw Scene;
 	
 
 	//A questo punto, abbiamo la finestra, ma partirà e si chiuderà all'istante. Creiamo il while per evitare che si chiuda

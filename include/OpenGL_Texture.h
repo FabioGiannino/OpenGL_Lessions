@@ -6,6 +6,7 @@ class OpenGL_Texture
 {
 public:
     OpenGL_Texture(const std::string& InImagePath);
+    OpenGL_Texture(const int InWidth, const int InHeight, const int InChannels);
     ~OpenGL_Texture();
     void Bind(GLuint TextureSlotID);
 private:
