@@ -111,3 +111,16 @@ GLuint OpenGL_Program::GetProgramID() const
 {
     return ProgramID;
 }
+
+//Come detto nell'header, queste due funzioni di wrap sono un'alternativa per non esporre il ProgramID, anche se in realtà con un get va bene lo stesso
+void OpenGL_Program::SetUniform(const std::string& InName, float InValue)
+{
+    glUniform1f(glGetUniformLocation(ProgramID, InName.c_str()), InValue);
+}
+
+void OpenGL_Program::SetUniform(const std::string& InName, const Color& InValue)
+{
+    glUniform4fv( glGetUniformLocation(ProgramID, InName.c_str()), 
+        1, reinterpret_cast<const GLfloat*>(&InValue));
+}
+
