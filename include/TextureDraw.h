@@ -13,8 +13,11 @@ private:
     GLuint VBO;
     GLuint EBO;
 
-    GLuint SmileTextureID;
-    GLuint BoxTextureID;
+    //GLuint SmileTextureID;
+    //GLuint BoxTextureID;
+    class OpenGL_Texture* SmileTextureID;       //come da spiegazione sotto
+    class OpenGL_Texture* BoxTextureID;
+    
 
     //Forward declaration: dichiariamo il simbolo qua dentro invece di importarci il .h, così da diminuire le dipendenze tra header.
     // Sarà poi il linker a sistemare tutto prendendo le corrette dichiarazioni dal file.cpp 

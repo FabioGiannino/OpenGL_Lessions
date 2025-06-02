@@ -4,14 +4,8 @@
 #include <fstream>
 #include <vector>
 #include "OpenGL_Program.h"
+#include "XCommon.h"
 
-struct Color
-{
-    float R;
-    float G;
-    float B;
-    float A;
-};
 
 //Disegnare il quadrato implica disegnare due triangoli rettangoli isosceli congruenti, colorandolo
 QuadColorDraw::QuadColorDraw()
