@@ -14,6 +14,7 @@ private:
     GLuint EBO;
 
     GLuint SmileTextureID;
+    GLuint BoxTextureID;
 
     //Forward declaration: dichiariamo il simbolo qua dentro invece di importarci il .h, così da diminuire le dipendenze tra header.
     // Sarà poi il linker a sistemare tutto prendendo le corrette dichiarazioni dal file.cpp 

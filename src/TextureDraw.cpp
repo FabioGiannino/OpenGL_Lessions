@@ -98,11 +98,23 @@ TextureDraw::TextureDraw()
 
     //5 - Creiamo la texture 
     SmileTextureID = CreateTexture("resources/textures/smile.png");
+    BoxTextureID = CreateTexture("resources/textures/wood-box.jpg");
+    
+    //Smile
     glActiveTexture(GL_TEXTURE0);               //attiviamo la prima texture 
     glBindTexture(GL_TEXTURE_2D, SmileTextureID);   //è una ripetizione perchè teoricamente è già stata effettuata questa operazione quando si crea la texture. é però utile nel caso si creino più texture assieme
-
     //glUniform1i(glGetUniformLocation(Program->GetProgramID(),"smile_tex"),0);   //settiamo la var smile_tex a 0 del .frag
     // Abbiamo inserito questa logica direttamente nel fragment shader, con 'layout (binding = 0) uniform sampler2D smile_tex;'
+
+    //Wood Box
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, BoxTextureID);
+
+    //6 - Attivare l'ALPHA BLENDING
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);      //Attiviamo il blending dei colori per impostare la gestione della trasparenza
+
+
 }
 
 TextureDraw::~TextureDraw()
@@ -110,6 +122,7 @@ TextureDraw::~TextureDraw()
     glDeleteVertexArrays(1,&VAO);
     glDeleteBuffers(1,&VBO);    
     glDeleteTextures(1, &SmileTextureID);
+    glDeleteTextures(1, &BoxTextureID);
     delete Program;
 }
 
