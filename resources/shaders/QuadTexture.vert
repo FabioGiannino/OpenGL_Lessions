@@ -9,4 +9,5 @@ void main()
 {
     gl_Position = vec4(vert_pos, 1.f);  
     vert_uv_out = vert_uv;
+    //vert_uv_out.y = 1.f - vert_uv_out.y;        //Flip sulla y -> le UV sono capovolte rispetto alla mesh. GIà PROCESSATO DURANTE LA CREAZIONE DELLA TEXTURE
 }

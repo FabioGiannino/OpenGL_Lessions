@@ -19,6 +19,8 @@ struct Color
 
 GLuint CreateTexture(const std::string& InFilePath)
 {
+    stbi_set_flip_vertically_on_load(true);     //per flippare sulla y la texture che si sta per creare (le UV sono invertite rispetto ai vertici delle mesh)
+
     int Width, Height, Channels;
     unsigned char* Data = stbi_load(InFilePath.c_str(), &Width, &Height, &Channels, 0);            //con questa API si carica l'immagine, e lui ritorna (sotto forma di puntatori input), l'altezza,larghezza e i canali dei coloi
     if (Data == NULL)           //Usciamo se l'immagine non è stata caricata correttamente
@@ -55,15 +57,15 @@ TextureDraw::TextureDraw()
     Program = new OpenGL_Program("resources/shaders/QuadTexture.vert","resources/shaders/QuadTexture.frag");
 
     std::vector<float> Vertices = {
-        //Triangolo di sinistra         //UVs DELLA TEXTURE 
+        //Triangolo di destra         //UVs DELLA TEXTURE 
         -0.5f,  -0.5f, 0.0f,            0.f, 0.f, 
         0.5,    -0.5f,  0.0f,           1.f, 0.f, 
-        -0.5f,   0.5f,   0.0f,          1.f, 1.f, 
+        0.5f,   0.5f,   0.0f,          1.f, 1.f, 
 
         //Triangolo di destra
-        -0.5f,   0.5f,   0.0f,          0.f, 0.f, 
-        0.5,    -0.5f,  0.0f,           1.f, 1.f,
-        0.5,    0.5f,  0.0f,            0.f, 1.f
+        -0.5f,  -0.5f,   0.0f,          0.f, 0.f, 
+        0.5,     0.5f,  0.0f,           1.f, 1.f,
+        -0.5,    0.5f,  0.0f,           0.f, 1.f
     };
 
     //1- Ora si crea il VAO ->Vertex Array Object: è essenzialmente un contenitore di Buffer e serve per attivare o disattivare più buffer contemporamente
@@ -99,7 +101,8 @@ TextureDraw::TextureDraw()
     glActiveTexture(GL_TEXTURE0);               //attiviamo la prima texture 
     glBindTexture(GL_TEXTURE_2D, SmileTextureID);   //è una ripetizione perchè teoricamente è già stata effettuata questa operazione quando si crea la texture. é però utile nel caso si creino più texture assieme
 
-    glUniform1i(glGetUniformLocation(Program->GetProgramID(),"smile_tex"),0);   //settiamo la var smile_tex a 0 del .frag
+    //glUniform1i(glGetUniformLocation(Program->GetProgramID(),"smile_tex"),0);   //settiamo la var smile_tex a 0 del .frag
+    // Abbiamo inserito questa logica direttamente nel fragment shader, con 'layout (binding = 0) uniform sampler2D smile_tex;'
 }
 
 TextureDraw::~TextureDraw()
