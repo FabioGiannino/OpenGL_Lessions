@@ -1,3 +1,3 @@
 # OpenGL Playground
-Project for teaching Hardware Accelerated Graphics with OpenGL
+Project for Learning Hardware Accelerated Graphics with OpenGL
 
