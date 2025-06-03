@@ -90,7 +90,7 @@ GLuint CreateProgram(GLuint VertexShaderID, GLuint FragmentShaderID)
     if(!Success)
     {        
         GLint MaxLogLength;
-        glGetShaderiv(ProgramID, GL_INFO_LOG_LENGTH, &MaxLogLength); //Ottengo la lunghezza dell'InfoLog
+        glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &MaxLogLength); //Ottengo la lunghezza dell'InfoLog
         
         std::vector<GLchar> InfoLog(MaxLogLength);      
         glGetProgramInfoLog(ProgramID, MaxLogLength, NULL, InfoLog.data()); //Inserisco tutto il log dentro la memoria di un vettore
