@@ -124,3 +124,8 @@ void OpenGL_Program::SetUniform(const std::string& InName, const Color& InValue)
         1, reinterpret_cast<const GLfloat*>(&InValue));
 }
 
+void OpenGL_Program::SetUniform(const std::string &InName, const glm::mat4 &InValue)
+{
+    glUniformMatrix4fv( glGetUniformLocation(ProgramID, InName.c_str()), 
+        1,  GL_FALSE, &InValue[0][0]);
+}
