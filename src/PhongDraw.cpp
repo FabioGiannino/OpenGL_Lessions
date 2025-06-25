@@ -114,6 +114,10 @@ PhongDraw::PhongDraw()
     Projection = glm::perspective(glm::radians(FovY), AspectRatio, ZNear, ZFar);
 
 
+    //ILLUMINAZIONE DI PHONG -> carichiamo nel fragm shader una point light, passandogli la pos di quest'ultima
+    glm::vec3 PointLightPos = glm::vec3(4.0f, 0, 0);
+    Program->SetUniform("point_light_pos", PointLightPos);
+
 }
 
 PhongDraw::~PhongDraw() 
@@ -141,7 +145,10 @@ void PhongDraw::Update(float InDeltaTime)
     //Creazione della Model-View-Projection Matrix, la matrice che converte le coordinate nei vari spazi
     glm::mat4 Mvp = Projection * View * Model;        //La sequenza di moltiplicazioni sarà Model poi View poi Projection, quindi l'ordine inverso indica la seq di moltiplicazioni
     
-    Program->SetUniform("mvp", Mvp);       //lo facciamo ruotare
+    Program->SetUniform("mvp", Mvp);       //carichiamo la matrice mvp, con tutte le trasformazioni, nello shader
+
+    Program->SetUniform("model", Model);    //carichiamo la model singolare perchè per l'illum. di Phong abbiamo bisogno delle coordinate World Space (e ora c'è solo la local o direttamente lo screen space)
+
 
     glDrawArrays(GL_TRIANGLES, 0, Vertices.size());   //disegnamo tutti i vertici dello stormtrooper
 }

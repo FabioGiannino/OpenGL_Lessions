@@ -129,3 +129,8 @@ void OpenGL_Program::SetUniform(const std::string &InName, const glm::mat4 &InVa
     glUniformMatrix4fv( glGetUniformLocation(ProgramID, InName.c_str()), 
         1,  GL_FALSE, &InValue[0][0]);
 }
+void OpenGL_Program::SetUniform(const std::string &InName, const glm::vec3 &InValue)
+{
+    glUniform3fv( glGetUniformLocation(ProgramID, InName.c_str()), 
+        1,  &InValue[0]);  
+}
