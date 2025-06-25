@@ -30,10 +30,10 @@ void main()
     //Diffuse light
     vec3 light_dir = normalize(point_light_pos - vert_world_position_out);
     //Lambert -> world normal moltiplicato (dot product) per la directional  light (solo la comp positiva)
-    float lambert = max(dot(vert_world_normal_out, light_dir), 0.f);
+    float lambert = max(dot( normalize(vert_world_normal_out), light_dir), 0.f);        //fix di una dimenticanza. bisogna normalizzare i vert_normal
     vec3 diffuse = pixel_color * lambert;
 
-
+    //TODO SPECULAR
 
     vec3 phong  = vec3(0, 0, 0);
     phong = ambient + diffuse;
