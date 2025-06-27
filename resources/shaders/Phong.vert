@@ -16,6 +16,7 @@ out vec3 vert_world_position_out;
 //dobbiamo passare la matrice Model per ottenere le coordinate in global space
 uniform mat4 model;
 
+
 void main() 
 {
     gl_Position = mvp * vec4(vert_pos, 1.0f);
@@ -37,4 +38,5 @@ void main()
     l'unica cosa che si modifica è la traslazione (sull'ultima colonna), ma non ci serve, quindi la eliminiamo passando da un mat4 a un mat3 
     */
     vert_world_normal_out = mat3(transpose(inverse(model))) * vert_norm;
+
 }

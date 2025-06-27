@@ -115,9 +115,11 @@ PhongDraw::PhongDraw()
 
 
     //ILLUMINAZIONE DI PHONG -> carichiamo nel fragm shader una point light, passandogli la pos di quest'ultima
-    glm::vec3 PointLightPos = glm::vec3(4.0f, 0, 0);
+    glm::vec3 PointLightPos = glm::vec3(5.0f, 0, 5.0f);
     Program->SetUniform("point_light_pos", PointLightPos);
 
+    //Specular -> Passiamo la posizione della camera 
+    Program->SetUniform("camera_position", Position);
 }
 
 PhongDraw::~PhongDraw() 
