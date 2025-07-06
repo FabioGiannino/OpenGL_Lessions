@@ -1,4 +1,4 @@
-#include "PhongDraw.h"
+#include "PostVFXDraw.h"
 #include <string>
 #include <fstream>
 #include <vector>
@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>      //libreria usata per il calcolo matriciale
 #include <glm/ext.hpp>
 
-PhongDraw::PhongDraw() 
+PostVFXDraw::PostVFXDraw() 
 {
     Program = new OpenGL_Program("resources/shaders/Phong.vert", "resources/shaders/Phong.frag");
     
@@ -117,10 +117,9 @@ PhongDraw::PhongDraw()
     //ILLUMINAZIONE DI PHONG -> carichiamo nel fragm shader una point light, passandogli la pos di quest'ultima
     glm::vec3 PointLightPos = glm::vec3(4.0f, 0, 0);
     Program->SetUniform("point_light_pos", PointLightPos);
-
 }
 
-PhongDraw::~PhongDraw() 
+PostVFXDraw::~PostVFXDraw() 
 {
     glDeleteVertexArrays(1, &Vao);
     glDeleteBuffers(1, &Vbo);
@@ -128,7 +127,7 @@ PhongDraw::~PhongDraw()
     delete Program;
 }
 
-void PhongDraw::Update(float InDeltaTime)
+void PostVFXDraw::Update(float InDeltaTime)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -141,14 +140,6 @@ void PhongDraw::Update(float InDeltaTime)
     Model = glm::translate(Model, glm::vec3(0,-4,0));
     Model = glm::rotate(Model, glm::radians(Angle), glm::vec3(0, 1, 0));
     Model = glm::scale(Model, glm::vec3(2.f));
-
-    /*Forma alternativa e più esplicita di scrivere la matrice Model
-    glm::mat4 Identity = glm::mat4(1.0f); 
-    glm::mat4 Translation = glm::translate(Identity, glm::vec3(0, -4, 0));
-    glm::mat4 Rotation = glm::rotate(Identity, glm::radians(Angle), glm::vec3(0, 1, 0)); 
-    glm::mat4 Scale = glm::scale(Identity, glm::vec3(2.f));
-    glm::mat4 Model = Translation * Rotation * Scale;       //così si effettua prima lo scale, poi la rotazione e infine la traslazione
-    */
 
     //Creazione della Model-View-Projection Matrix, la matrice che converte le coordinate nei vari spazi
     glm::mat4 Mvp = Projection * View * Model;        //La sequenza di moltiplicazioni sarà Model poi View poi Projection, quindi l'ordine inverso indica la seq di moltiplicazioni

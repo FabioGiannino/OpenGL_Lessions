@@ -11,6 +11,7 @@
 #include "TexurePerspective.h"
 #include "CubeDraw.h"
 #include "PhongDraw.h"
+#include "PostVFXDraw.h"
 
 //necessario per forzare l'uso della scheda video NVidia sul laptop invece della scheda video integrata Intel
 #ifdef _WIN32
@@ -35,8 +36,8 @@ int main() {
 	//TextureDraw Scene;
 	//TexurePerspective Scene;
 	//CubeDraw Scene;
-	PhongDraw Scene;
-	
+	//PhongDraw Scene;
+	PostVFXDraw Scene;
 
 	//A questo punto, abbiamo la finestra, ma partirà e si chiuderà all'istante. Creiamo il while per evitare che si chiuda
 	while(Win.IsOpened())
