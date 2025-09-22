@@ -184,13 +184,8 @@ PostVFXDraw::PostVFXDraw()
     GLuint QuadLocation_1 = 1;
     glVertexAttribPointer(QuadLocation_1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3* sizeof(float)));
     glEnableVertexAttribArray(QuadLocation_1);
-
-    
-
-
-
-
 }
+
 
 PostVFXDraw::~PostVFXDraw() 
 {
@@ -199,6 +194,8 @@ PostVFXDraw::~PostVFXDraw()
     delete StormTextureId;
     delete SceneProgram;
 }
+
+
 
 void PostVFXDraw::Update(float InDeltaTime)
 {
