@@ -11,8 +11,16 @@ void main()
 {
     //frag_color = texture(scene_texture, vert_uv_out);
 
+    /*GrayScale
     vec4 color = texture(scene_texture, vert_uv_out);
     float avg = (color.r + color.g + color.b)/5.0;
     frag_color = vec4(avg, avg, avg, 1.0f);
+    */
+
+    //Negative
+    vec4 color = texture(scene_texture, vert_uv_out);
+    frag_color = 1.f - color;
+    
+
 
 }
