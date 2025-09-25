@@ -71,6 +71,23 @@ vec4 dynamic_wave()
 //--------------------------------------------------------------------------
 
 
+//--------------------------------------------------------------------------
+//Funzione Quake: fa un effetto di terremoto sulla scena sfruttando sempre le funzioni seno e coseno, senza però modificare ampiezza o periodo
+vec4 quake()
+{
+    vec2 uv_current = vert_uv_out;
+    float strenght = 0.01;
+    uv_current.x += cos(time *30) * strenght;
+    uv_current.y += cos(time *45) * strenght;
+    return texture(scene_texture,uv_current);
+}
+
+
+//--------------------------------------------------------------------------
+
+
+
+
 
 
 void main() 
@@ -113,6 +130,7 @@ void main()
     */
     
     //frag_color = blur();
+    //frag_color = dynamic_wave();
 
-    frag_color = dynamic_wave();
+    frag_color  = quake();
 }
