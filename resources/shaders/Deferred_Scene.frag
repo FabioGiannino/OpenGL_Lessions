@@ -20,7 +20,7 @@ void main()
 {
     frag_color = texture(storm_tex, vert_uv_out).rgb;
     world_normal = normalize(vert_world_normal_out);
-    world_position = world_position;
+    world_position = vert_world_position_out;
 }
 
 

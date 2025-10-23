@@ -234,12 +234,41 @@ static void DebugGBuffer(GLuint GFbo)
     glDisable(GL_CULL_FACE);
 
     glBindFramebuffer(GL_READ_FRAMEBUFFER, GFbo);      //GL_READ_FRAMEBUFFER = read operation
+    
+    /*
     glReadBuffer(GL_COLOR_ATTACHMENT0);
     glBlitFramebuffer(                             //FUNZIONE BLIT -> Sposta i dati da un framebuffer readable in un framebuffer writable
         0, 0, 800, 600,                             //Bounds del buffer di origine
-        0, 0, 800, 600,                               //Bounds buffer di destinazione
+        0, 300, 400, 600,                               //Bounds buffer di destinazione
         GL_COLOR_BUFFER_BIT,                        //Indica il buffer di destinazione
         GL_LINEAR                                   //interpolazione
+    );
+    */
+
+    //Renderizziamo le tre informazioni: Diffuse - World Normal - World Position
+    glReadBuffer(GL_COLOR_ATTACHMENT0);             //Diffuse
+    glBlitFramebuffer(                             
+        0, 0, 800, 600,                            
+        0, 300, 400, 600,                          
+        GL_COLOR_BUFFER_BIT,                       
+        GL_LINEAR                                  
+    );
+
+    glReadBuffer(GL_COLOR_ATTACHMENT1);             //World Normal  ->RGB diventano i colori delle direzioni
+    glBlitFramebuffer(                              //Red -> right, le normali che pt a destra
+        0, 0, 800, 600,                             //Green -> up, le normali che puntano in alto
+        400, 300, 800, 600,                         //Blue -> forward, le nomali che puntano fuori (la z va dentro, verso lo spettatore)
+        GL_COLOR_BUFFER_BIT,                       
+        GL_LINEAR                                  
+    );
+
+    
+    glReadBuffer(GL_COLOR_ATTACHMENT2);             //World Position ->RGB diventano i colori delle posizioni
+    glBlitFramebuffer(                              //Red -> right, i punti più a destra si colorano di rosso
+        0, 0, 800, 600,                             //Green -> up, i punti più in alto si colorano di verde
+        0, 0, 400, 300,                             //Blue -> forward, i punti più vicini allo schermo di colorano di blue
+        GL_COLOR_BUFFER_BIT,                       
+        GL_LINEAR                                  
     );
 }
 
