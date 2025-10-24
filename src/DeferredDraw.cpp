@@ -13,7 +13,7 @@
 /*
 Deferred Draw: Nuova tipologia di renderizzazione delle immagini. A differenza di quanto visto finora, cioè Forwarding Draw, dove ogni pixel della window viene elaborato,
     il Deferred Draw sfrutta due pipeline distinte per calcolare prima quali sono i punti da visualizzare e poi quale colorazione devono assumere in base alle luci che li colpiscono.
-    Riduce di molto la pesantezza del calcolo in presenza di più luci, perchè effettua il calcolo solo per i punti interessati, invece che per ogni pixer della window.
+    Riduce di molto la pesantezza del calcolo in presenza di più luci e più mesh, perchè effettua il calcolo solo per i punti interessati, invece che includere anche i punti scartati dall'occlusione tipo.
     Il funzionamento è simile al PostFX, dove c'è la prima pipeline che renderizza l'oggetto SENZA LUCE, viene fatto uno "screenshot" e passato alla seconda pipeline, che calcola le luci
     solo per i punti "sopravvissuti" della prima pipeline
 */
@@ -214,12 +214,18 @@ DeferredDraw::DeferredDraw()
 
     //ILLUMINAZIONE DI PHONG -> Si calcola con il blending
     BlendingProgram->Bind();    
-    glm::vec3 PointLightPos = glm::vec3(4.0f, 0, 0.f);
-    BlendingProgram->SetUniform("point_light_pos", PointLightPos);       
     glm::vec3 CameraPosition = glm::vec3(0.5f,0.5f,1.f);
     BlendingProgram->SetUniform("camera_position", CameraPosition);       
-    
+   
+    //3 fonti di luce
+    BlendingProgram->SetUniform("light_count", 3);      
 
+    glm::vec3 PointLightRight = glm::vec3(4.0f, 0, 0.f);
+    glm::vec3 PointLightUp = glm::vec3(0.0f, 4.0, 0.f);
+    glm::vec3 PointLightLeft = glm::vec3(-4.0f, 0, 0.f);
+    BlendingProgram->SetUniform("point_light_pos[0]", PointLightRight);          //Così si passano i dati degli array
+    BlendingProgram->SetUniform("point_light_pos[1]", PointLightRight);    
+    BlendingProgram->SetUniform("point_light_pos[2]", PointLightRight);    
 
 }
 

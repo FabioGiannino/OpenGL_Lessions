@@ -15,6 +15,7 @@ public:
     //Anche se abbiamo inserito il GetProgramID, mostriamo un altro modo per wrappare nella classe Program i vari glUniform.
     // Sfruttiamo l'overloading  dei metodi, usando i tipi di variabili ad-hoc per la glUniform
     void SetUniform(const std::string &InName, float InValue);
+    void SetUniform(const std::string &InName, int InValue);
     void SetUniform(const std::string &InName, const Color &InValue);
     void SetUniform(const std::string &InName, const glm::mat4 &InValue);
     void SetUniform(const std::string &InName, const glm::vec3 &InValue);

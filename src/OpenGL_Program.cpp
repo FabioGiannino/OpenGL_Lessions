@@ -118,6 +118,11 @@ void OpenGL_Program::SetUniform(const std::string& InName, float InValue)
     glUniform1f(glGetUniformLocation(ProgramID, InName.c_str()), InValue);
 }
 
+void OpenGL_Program::SetUniform(const std::string& InName, int InValue)
+{
+    glUniform1i(glGetUniformLocation(ProgramID, InName.c_str()), InValue);
+}
+
 void OpenGL_Program::SetUniform(const std::string& InName, const Color& InValue)
 {
     glUniform4fv( glGetUniformLocation(ProgramID, InName.c_str()), 
