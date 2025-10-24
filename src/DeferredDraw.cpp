@@ -10,6 +10,15 @@
 #include <glm/glm.hpp>      //libreria usata per il calcolo matriciale
 #include <glm/ext.hpp>
 
+/*
+Deferred Draw: Nuova tipologia di renderizzazione delle immagini. A differenza di quanto visto finora, cioè Forwarding Draw, dove ogni pixel della window viene elaborato,
+    il Deferred Draw sfrutta due pipeline distinte per calcolare prima quali sono i punti da visualizzare e poi quale colorazione devono assumere in base alle luci che li colpiscono.
+    Riduce di molto la pesantezza del calcolo in presenza di più luci, perchè effettua il calcolo solo per i punti interessati, invece che per ogni pixer della window.
+    Il funzionamento è simile al PostFX, dove c'è la prima pipeline che renderizza l'oggetto SENZA LUCE, viene fatto uno "screenshot" e passato alla seconda pipeline, che calcola le luci
+    solo per i punti "sopravvissuti" della prima pipeline
+*/
+
+
 DeferredDraw::DeferredDraw() 
 {
     SceneProgram = new OpenGL_Program("resources/shaders/Deferred_Scene.vert", "resources/shaders/Deferred_Scene.frag");
@@ -114,12 +123,6 @@ DeferredDraw::DeferredDraw()
     Projection = glm::perspective(glm::radians(FovY), AspectRatio, ZNear, ZFar);
 
 
-    //ILLUMINAZIONE DI PHONG 
-    glm::vec3 PointLightPos = glm::vec3(4.0f, 0, 0);
-    SceneProgram->Bind();    
-    //SceneProgram->SetUniform("point_light_pos", PointLightPos);       COMMENTATO. LA LUCE SI CALCOLA DOPO
-
-
     #pragma region GBUFFER
     //Preprariamo il framebuffer GBUFFER a disegnare "off screen"
     glGenFramebuffers(1, &GFbo);
@@ -176,9 +179,10 @@ DeferredDraw::DeferredDraw()
     #pragma endregion   //GBUFFER
 
 
-    //La pipeline sopra è quella che alla fine crea la scena complessiva. la seconda pipeline fa uno screenshot della scena e la tratta come una texture
-    // su cui fare dei rimaneggiamenti, i post fx
-    FXProgram = new OpenGL_Program("resources/shaders/Deferred_Blend.vert", "resources/shaders/Deferred_Blend.frag");
+    #pragma region Blending
+    //Esattamente con per il Postfx, nel Deferred Draw la seconda pipeline prende lo "screenshot" uscito fuori dalla prima pipeline 
+    // e ci calcola il fattore luce solo sui punti che davvero devono essere illuminati
+    BlendingProgram = new OpenGL_Program("resources/shaders/Deferred_Blend.vert", "resources/shaders/Deferred_Blend.frag");
     std::vector<float> QuadVertices = {         //Sono già in NDC, quindi i valori saranno tra -1 e 1
          //Triangle Right    //Uvs
         -1.f, -1.f, 0.f,   0.f, 0.f,  // bottom-left
@@ -191,11 +195,11 @@ DeferredDraw::DeferredDraw()
         -1.f,  1.f, 0.f,   0.f, 1.f   // top-left
     };
     //1- crea il VAO
-    glGenVertexArrays(1,&FxVao);
-    glBindVertexArray(FxVao);
+    glGenVertexArrays(1,&BlendingVao);
+    glBindVertexArray(BlendingVao);
 
-    glGenBuffers(1,&FxVbo);
-    glBindBuffer(GL_ARRAY_BUFFER, FxVbo);
+    glGenBuffers(1,&BlendingVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, BlendingVbo);
     size_t QuadDataSize = QuadVertices.size() * sizeof(float);
     glBufferData(GL_ARRAY_BUFFER, QuadDataSize, QuadVertices.data(), GL_STATIC_DRAW);
 
@@ -206,6 +210,17 @@ DeferredDraw::DeferredDraw()
     GLuint QuadLocation_1 = 1;
     glVertexAttribPointer(QuadLocation_1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) (3* sizeof(float)));
     glEnableVertexAttribArray(QuadLocation_1);
+    #pragma endregion //Blending
+
+    //ILLUMINAZIONE DI PHONG -> Si calcola con il blending
+    BlendingProgram->Bind();    
+    glm::vec3 PointLightPos = glm::vec3(4.0f, 0, 0.f);
+    BlendingProgram->SetUniform("point_light_pos", PointLightPos);       
+    glm::vec3 CameraPosition = glm::vec3(0.5f,0.5f,1.f);
+    BlendingProgram->SetUniform("camera_position", CameraPosition);       
+    
+
+
 }
 
 
@@ -295,7 +310,7 @@ void DeferredDraw::Update(float InDeltaTime)
 
     glm::mat4 Model = glm::mat4(1.0f);
     Model = glm::translate(Model, glm::vec3(0,-4,0));
-    Model = glm::rotate(Model, glm::radians(Angle), glm::vec3(0, 1, 0));
+    Model = glm::rotate(Model, glm::radians(Angle), glm::vec3(0, 1, 0)); 
     Model = glm::scale(Model, glm::vec3(2.f));
 
     //Creazione della Model-View-Projection Matrix, la matrice che converte le coordinate nei vari spazi
@@ -305,11 +320,17 @@ void DeferredDraw::Update(float InDeltaTime)
 
     glDrawArrays(GL_TRIANGLES, 0, SceneVertices.size());   //disegnamo tutti i vertici dello stormtrooper
 
-    DebugGBuffer(GFbo);
-    return;
 
 
-    //2. Post FX (Pass 2)
+   
+    //DebugGBuffer(GFbo);
+   
+
+
+
+
+
+    //2. Blending Pass
     //Si ritorna al frame buffer iniziale, quello Swapchain, cioè quello con front e back buffer usato per mostrare le immagini su monitor. 
     //Finora abbiamo lavorato su un buffer custom. ora bisogna collegarlo a quello da display
     glBindFramebuffer(GL_FRAMEBUFFER, 0);   
@@ -317,13 +338,19 @@ void DeferredDraw::Update(float InDeltaTime)
     glDisable(GL_CULL_FACE);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBindVertexArray(FxVao);
-    FXProgram->Bind();
-    FXProgram->SetUniform("time",ElapsedTime); 
+    glBindVertexArray(BlendingVao);
+    BlendingProgram->Bind();
 
-    //Il nuovo programma bindato richiede una texture (nel fragm shader PostFX_Effect.frag)
+    //Il nuovo programma bindato richiede 3 texture -> la diffuse, la normal e la position
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, DiffuseTexture);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, NormalTexture);
+
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, PositionTexture);
+
     glDrawArrays(GL_TRIANGLES, 0 , 6); //disegno i due triangoli per la texture
 
 

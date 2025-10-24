@@ -25,7 +25,7 @@ private:
     GLuint PositionTexture;
     GLuint SceneRbo;
 
-    class OpenGL_Program* FXProgram;
-    GLuint FxVao;
-    GLuint FxVbo;
+    class OpenGL_Program* BlendingProgram;
+    GLuint BlendingVao;
+    GLuint BlendingVbo;
 };
